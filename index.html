@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سیستەمی کاشێر</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1effa;--card:#fff;--ink:#1d1a3d;--mut:#6f6c91;--line:#e3e0f2;--pri:#6a47f5;--onpri:#fff;--deep:#1e1b4b;--acc:#ffb020;--red:#e5484d;--ok:#12a26b;--tl:93%;--tc:34%;--sh:0 6px 20px rgba(40,24,120,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#100f24;--card:#1a1838;--ink:#ecebfa;--mut:#9996c0;--line:#2d2a55;--pri:#8f74ff;--onpri:#0f0b2b;--deep:#0a0919;--tl:26%;--tc:82%;--sh:0 6px 20px rgba(0,0,0,.35)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#100f24;--card:#1a1838;--ink:#ecebfa;--mut:#9996c0;--line:#2d2a55;--pri:#8f74ff;--onpri:#0f0b2b;--deep:#0a0919;--tl:26%;--tc:82%;--sh:0 6px 20px rgba(0,0,0,.35)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.6 Vazirmatn,Tahoma,"Noto Naskh Arabic",sans-serif}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 14px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+input{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+.mut{color:var(--mut)}.hide{display:none!important}
+.rail{position:fixed;inset-block:0;inset-inline-start:0;width:88px;background:var(--deep);display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;z-index:20}
+.brand{font-size:30px;margin-bottom:14px}
+.rail button{width:100%;display:flex;flex-direction:column;align-items:center;gap:0;background:transparent;border:0;color:#b9b5e8;padding:10px 2px;border-radius:14px;font-size:12px;line-height:1.5}
+.rail button span{font-size:22px}.rail button.on{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+main{margin-inline-start:88px;padding:16px;max-width:1240px}
+@media(max-width:820px){
+.rail{inset-block:auto 0;inset-inline:0;width:auto;flex-direction:row;justify-content:space-around;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+.brand{display:none}.rail button{width:auto;flex:1}main{margin:0;padding:12px 12px 96px}}
+.scan{position:relative;display:flex;gap:10px;align-items:center;background:var(--deep);border-radius:20px;padding:14px;margin-bottom:14px;overflow:hidden;box-shadow:var(--sh)}
+.scan::before{content:"";position:absolute;inset-inline:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#ff4d5e,transparent);opacity:0}
+.scan:focus-within::before{opacity:1;animation:lz 2.2s ease-in-out infinite alternate}
+@keyframes lz{to{top:calc(100% - 2px)}}
+@media(prefers-reduced-motion:reduce){.scan:focus-within::before{animation:none;top:50%}}
+.scan input{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:#fff;font-size:18px;padding:12px 14px;border-radius:14px;text-align:center;letter-spacing:1px}
+.scan input::placeholder{color:#a9a5dd;letter-spacing:0}
+.cam{background:var(--acc);color:#2a1d00;border:0;font-weight:800;padding:12px 16px;border-radius:14px;white-space:nowrap}
+.tdy{color:#cfcbff;font-size:12px;white-space:nowrap;line-height:1.3}.tdy b{display:block;color:#fff;font-size:16px}
+@media(max-width:560px){.tdy{display:none}}
+.sale{display:grid;grid-template-columns:1fr 390px;gap:16px;align-items:start}
+@media(max-width:900px){.sale{grid-template-columns:1fr}}
+.cartcol{position:sticky;top:12px}@media(max-width:900px){.cartcol{position:static}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--sh)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 12px}
+.chips button{white-space:nowrap;border-radius:20px;padding:6px 16px}
+.chips button.on,.seg button.on{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}
+.item{text-align:start;display:flex;flex-direction:column;gap:3px;padding:12px;border-radius:16px;min-height:132px;transition:transform .12s}
+.item:active{transform:scale(.96)}.item:disabled{opacity:.45;cursor:not-allowed}
+.av{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:19px;background:hsl(var(--h) 80% var(--tl));color:hsl(var(--h) 60% var(--tc))}
+.item b{font-weight:600;line-height:1.35}.item small{color:var(--mut)}
+.item .pr{margin-top:auto;font-weight:800;color:var(--pri)}
+.low{color:var(--red)!important}
+.paper{position:relative;background:var(--card);border-radius:18px 18px 0 0;padding:16px;box-shadow:var(--sh);margin-bottom:12px}
+.paper::after{content:"";position:absolute;inset-inline:0;top:100%;height:6px;background:var(--card);-webkit-mask:conic-gradient(from -45deg at bottom,#000 90deg,#0000 0) 50%/12px 100%;mask:conic-gradient(from -45deg at bottom,#000 90deg,#0000 0) 50%/12px 100%}
+.ph{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px dashed var(--line);font-weight:800;font-size:17px}
+.ph button{font-weight:400;font-size:13px;padding:4px 10px}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.qty{display:flex;align-items:center;gap:8px}.qty button{width:30px;height:30px;padding:0;border-radius:50%;font-weight:800}
+.x{color:var(--red);border:0;background:none;padding:2px 6px}
+.empty{color:var(--mut);text-align:center;padding:28px 0}
+.sum{display:grid;gap:8px;margin-top:12px}
+.sum div{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sum input{width:110px;text-align:center;padding:5px}
+.total{font-size:24px;font-weight:800;color:var(--pri);border-top:2px dashed var(--line);padding-top:10px}
+.pay{width:100%;padding:16px;font-size:19px;font-weight:800;background:var(--acc);color:#2a1d00;border:0;border-radius:16px;box-shadow:0 6px 16px rgba(255,176,32,.4)}
+.pay:disabled{opacity:.45;box-shadow:none}
+.ghost{background:transparent}.pri{background:var(--pri);color:var(--onpri);border-color:var(--pri);font-weight:600}
+dialog{border:1px solid var(--line);border-radius:22px;background:var(--card);color:var(--ink);padding:20px;width:min(430px,94vw)}
+dialog::backdrop{background:rgba(10,8,40,.6)}
+.seg{display:flex;gap:6px;margin:10px 0}.seg button{flex:1}
+.row{display:flex;gap:8px;margin-top:14px}.row button{flex:1;padding:11px}
+.big{font-size:32px;font-weight:800;text-align:center;color:var(--pri)}
+.fs{display:grid;gap:8px}.fs label{display:grid;gap:3px;color:var(--mut);font-size:13px}
+.vw{position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:4/3}
+.vw video{width:100%;height:100%;object-fit:cover}.vw i{position:absolute;inset:22% 10%;border:3px solid var(--acc);border-radius:14px}
+#rc{font-size:13px}#rc .l{display:flex;justify-content:space-between;gap:8px}#rc hr{border:0;border-top:1px dashed var(--mut)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--sh);color:var(--mut);font-size:13px}
+.stats b{display:block;font-size:22px;color:var(--pri)}
+h2{margin:0 0 12px;font-size:20px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:14px}
+.inl{display:flex;gap:6px;grid-column:span 2}.inl button{white-space:nowrap}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}
+th{color:var(--mut);font-weight:600;font-size:13px}th,td{padding:9px 8px;text-align:start;border-bottom:1px solid var(--line);white-space:nowrap}
+td input{width:90px;padding:5px 8px}
+.toast{position:fixed;inset-inline:0;bottom:calc(96px + env(safe-area-inset-bottom,0px));margin:auto;width:max-content;max-width:90vw;background:var(--deep);color:#fff;padding:11px 18px;border-radius:14px;display:none;z-index:99;box-shadow:var(--sh)}
+input,select{font-size:16px}button{touch-action:manipulation}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.brand .ic{width:34px;height:34px;fill:var(--acc);stroke:none}
+.cam{display:flex;align-items:center;gap:8px}.x{font-size:22px;line-height:1}
+dialog{max-height:90vh;overflow:auto}
+.cbar,.sbg{display:none}
+.card{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:start;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:8px}
+.tag{display:inline-block;background:var(--bg);color:var(--mut);border-radius:20px;padding:0 10px;font-size:12px}
+.btn{display:inline-block;border:1px solid var(--line);border-radius:10px;padding:6px 12px;text-decoration:none;color:var(--pri)}
+.acts{display:flex;gap:6px;align-items:center}
+.bars{display:flex;align-items:flex-end;gap:2px;height:150px;direction:ltr}
+.bc{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+.bc i{display:block;width:100%;background:var(--pri);border-radius:4px 4px 0 0;opacity:.85}
+.bc span{font-size:9px;color:var(--mut);height:14px;flex:none}
+.tl{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line)}
+@media(max-width:900px){
+body{font-size:14px}h2{font-size:18px}
+.rail{height:calc(64px + env(safe-area-inset-bottom,0px));padding:6px 8px env(safe-area-inset-bottom,0px);align-items:stretch}
+.rail button{font-size:11px;gap:2px;justify-content:center}
+main{padding:10px 10px calc(150px + env(safe-area-inset-bottom,0px))}
+.scan{padding:10px;border-radius:16px;gap:8px;margin-bottom:10px}
+.scan input{padding:10px}.cam{padding:10px 12px}.cam .tx{display:none}
+.panel{padding:10px;border-radius:16px}
+.grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.item{min-height:0;padding:10px;display:grid;grid-template-columns:36px 1fr;column-gap:8px;row-gap:0;align-items:center}
+.av{width:36px;height:36px;grid-row:span 3;font-size:16px}
+.item b{font-size:14px}.item .pr{margin-top:2px;font-size:13px}
+.cartcol{position:fixed;top:auto;inset-inline:0;bottom:0;z-index:30;max-height:82vh;overflow:auto;background:var(--bg);padding:10px 12px calc(14px + env(safe-area-inset-bottom,0px));border-radius:22px 22px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.3);transform:translateY(110%);visibility:hidden;transition:transform .25s,visibility .25s}
+.cartcol.open{transform:none;visibility:visible}
+.cartcol::before{content:"";display:block;width:40px;height:4px;border-radius:2px;background:var(--mut);opacity:.5;margin:0 auto 10px}
+.sbg{position:fixed;inset:0;background:rgba(10,8,40,.55);z-index:29}.sbg.open{display:block}
+.cbar{display:flex;justify-content:space-between;align-items:center;position:fixed;inset-inline:10px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:25;background:var(--pri);color:var(--onpri);border:0;border-radius:16px;padding:13px 18px;font-weight:700;font-size:15px;box-shadow:0 8px 22px rgba(60,30,200,.35)}
+.toast{bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+.big{font-size:28px}
+}
+@media print{body *{visibility:hidden}#rc,#rc *{visibility:visible}#rc{position:absolute;inset:0;color:#000}}
+</style>
+</head>
+<body>
+<aside class="rail"><div class="brand"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="2" height="14"/><rect x="7" y="5" width="1" height="14"/><rect x="10" y="5" width="3" height="14"/><rect x="15" y="5" width="1" height="14"/><rect x="18" y="5" width="3" height="14"/></svg></div><div id="nav" style="display:contents">
+<button data-t="sale" class="on"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 10.2a1 1 0 0 0 1 .8h8.7a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>فرۆشتن</button>
+<button data-t="prod"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>بەرهەم</button>
+<button data-t="supp"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/></svg>مەندوب</button>
+<button data-t="debt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 14.5h2"/></svg>قەرز</button>
+<button data-t="hist"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg>ڕاپۆرت</button></div></aside>
+<main>
+<section id="sale">
+ <div class="scan">
+  <input id="bc" inputmode="numeric" autocomplete="off" placeholder="بارکۆد سکان بکە یان بینووسە، پاشان Enter" autofocus>
+  <button class="cam" id="camb" aria-label="کامێرا"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="tx">کامێرا</span></button>
+  <div class="tdy">فرۆشی ئەمڕۆ<b id="today"></b></div>
+ </div>
+ <div class="sale">
+  <div class="panel">
+   <input id="q" type="search" placeholder="گەڕان بە ناوی بەرهەم">
+   <div class="chips" id="cats"></div>
+   <div class="grid" id="grid"></div>
+  </div>
+  <div class="cartcol">
+   <div class="paper">
+    <div class="ph"><span>سەبەتە</span><button class="ghost" id="clr">پاککردنەوە</button></div>
+    <div id="cart"></div>
+    <div class="sum">
+     <div><span>کۆ</span><b id="sub"></b></div>
+     <div><span>داشکاندن (د.ع)</span><input id="disc" type="number" min="0" value="0"></div>
+     <div><span>باج %</span><input id="tax" type="number" min="0" max="100" value="0"></div>
+     <div class="total"><span>کۆی گشتی</span><span id="tot"></span></div>
+    </div>
+   </div>
+   <button class="pay" id="payb" disabled>پارەدان</button>
+  </div>
+ </div>
+</section>
+
+<section id="prod" class="hide">
+ <h2>بەرهەمەکان</h2>
+ <div class="panel">
+  <div class="form">
+   <div class="inl"><input id="pc" inputmode="numeric" placeholder="بارکۆد (سکان بکە)"><button id="pcam" aria-label="سکانی کامێرا"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg></button><button id="pgen">کۆد دروست بکە</button></div>
+   <input id="pn" placeholder="ناوی بەرهەم"><input id="pg" placeholder="بەش (نموونە: خواردن)">
+   <input id="pp" type="number" min="0" placeholder="نرخ"><input id="ps" type="number" min="0" placeholder="بڕی کۆگا">
+   <button class="pri" id="padd">زیادکردنی بەرهەم</button>
+  </div>
+  <div class="tw"><table><thead><tr><th>ناو</th><th>بارکۆد</th><th>بەش</th><th>نرخ</th><th>کۆگا</th><th></th></tr></thead><tbody id="ptb"></tbody></table></div>
+ </div>
+</section>
+
+<section id="supp" class="hide">
+ <h2>مەندوبەکان</h2>
+ <div class="panel">
+  <div class="form"><input id="mn" placeholder="ناوی مەندوب"><input id="mp" inputmode="tel" placeholder="ژمارەی پەیوەندی"><input id="mt" placeholder="جۆری بەرهەم (نموونە: شیرەمەنی)"><button class="pri" id="madd">زیادکردنی مەندوب</button></div>
+  <div id="mlist"></div>
+ </div>
+</section>
+
+<section id="debt" class="hide">
+ <h2>قەرزەکان</h2>
+ <div class="stats"><div>کۆی قەرز<b id="dtot"></b></div><div>ژمارەی قەرزارەکان<b id="dcnt"></b></div></div>
+ <div class="panel">
+  <div class="form"><input id="dn2" placeholder="ناوی قەرزار"><input id="dp2" inputmode="tel" placeholder="ژمارەی مۆبایل"><input id="da2" type="number" min="0" placeholder="بڕی قەرز"><input id="dno2" placeholder="تێبینی (دڵخواز)"><button class="pri" id="dadd">تۆمارکردنی قەرز</button></div>
+  <div id="dlist"></div>
+ </div>
+</section>
+
+<section id="hist" class="hide">
+ <h2>ڕاپۆرت و مێژوو</h2><div class="chips" id="per"></div><div class="panel" id="chart" style="margin-bottom:12px"></div>
+ <div class="stats" id="stats"></div>
+ <div class="panel tw"><table><thead><tr><th>ژمارە</th><th>کات</th><th>شێواز</th><th>کۆ</th><th></th></tr></thead><tbody id="htb"></tbody></table></div>
+</section>
+</main>
+
+<dialog id="pd"></dialog><dialog id="qd"></dialog><dialog id="dd"></dialog>
+<dialog id="cd"><div class="vw"><video id="vid" playsinline muted></video><i></i></div><input type="range" id="zm" style="display:none;width:100%;margin:10px 0 0" aria-label="زووم"><p class="mut" style="text-align:center;margin:10px 0 0">بارکۆدەکە بخەرە ناو چوارچێوەکە</p><div class="row"><button onclick="camStop()">داخستن</button></div></dialog>
+<dialog id="rd"><div id="rc"></div><div class="row"><button class="pri" onclick="window.print()">چاپکردن</button><button onclick="rd.close()">داخستن</button></div></dialog>
+<div class="sbg" id="sbg"></div>
+<button class="cbar" id="cbar"><span>سەبەتە <b id="cn">0</b></span><b id="ct"></b></button>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s),fmt=n=>Math.round(n).toLocaleString('en-US')+' د.ع';
+const e=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
+function ld(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(x){return d}}
+function sv(){try{localStorage.setItem('pos_p',JSON.stringify(P));localStorage.setItem('pos_s',JSON.stringify(S));localStorage.setItem('pos_m',JSON.stringify(M));localStorage.setItem('pos_d',JSON.stringify(D))}catch(x){}}
+let P=ld('pos_p',[
+{id:1,name:'نان',code:'6001',cat:'خواردن',price:500,stock:50},
+{id:2,name:'برنج',code:'6002',cat:'خواردن',price:2500,stock:30},
+{id:3,name:'ڕۆنی چێشت',code:'6003',cat:'خواردن',price:4000,stock:20},
+{id:4,name:'ئاو',code:'7001',cat:'خواردنەوە',price:250,stock:100},
+{id:5,name:'پێپسی',code:'7002',cat:'خواردنەوە',price:750,stock:60},
+{id:6,name:'چا',code:'7003',cat:'خواردنەوە',price:3000,stock:25},
+{id:7,name:'شیر',code:'8001',cat:'شیرەمەنی',price:1250,stock:40},
+{id:8,name:'ماست',code:'8002',cat:'شیرەمەنی',price:1000,stock:35},
+{id:9,name:'سابوون',code:'9001',cat:'پاککەرەوە',price:1500,stock:4}]);
+let S=ld('pos_s',[]),cart=[],cat='all',meth='cash';
+let M=ld('pos_m',[]),D=ld('pos_d',[]);
+
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2200)}
+function beep(ok=true){try{const a=new(window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=ok?1200:300;g.gain.value=.08;o.connect(g);g.connect(a.destination);o.start();setTimeout(()=>{o.stop();a.close()},ok?90:220)}catch(x){}}
+function show(t){['sale','prod','supp','debt','hist'].forEach(i=>$('#'+i).classList.toggle('hide',i!==t));
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ $('#cbar').classList.toggle('hide',t!=='sale');sheet(false);
+ if(t==='prod')rProd();if(t==='hist')rHist();if(t==='sale')rSale();if(t==='supp')rSupp();if(t==='debt')rDebt()}
+$('#nav').onclick=ev=>{const b=ev.target.closest('button');if(b)show(b.dataset.t)};
+
+function calc(){const sub=cart.reduce((a,c)=>a+c.p.price*c.q,0);
+ const disc=Math.min(Math.max(+$('#disc').value||0,0),sub);
+ const tax=Math.round((sub-disc)*(+$('#tax').value||0)/100);
+ return{sub,disc,tax,total:sub-disc+tax}}
+
+function rSale(){
+ const cats=['all',...new Set(P.map(p=>p.cat).filter(Boolean))];
+ $('#cats').innerHTML=cats.map(c=>`<button class="${c===cat?'on':''}" data-c="${e(c)}">${c==='all'?'هەموو':e(c)}</button>`).join('');
+ const q=$('#q').value.trim().toLowerCase();
+ const list=P.filter(p=>(cat==='all'||p.cat===cat)&&(!q||p.name.toLowerCase().includes(q)));
+ $('#grid').innerHTML=list.map(p=>`<button class="item" data-id="${p.id}" ${p.stock<=0?'disabled':''}><span class="av" style="--h:${hue(p.cat)}">${e(p.name[0]||'?')}</span><b>${e(p.name)}</b><small class="${p.stock<=5?'low':''}">${p.stock<=0?'تەواو بووە':'کۆگا: '+p.stock}</small><span class="pr">${fmt(p.price)}</span></button>`).join('')||'<div class="empty">هیچ بەرهەمێک نەدۆزرایەوە</div>';
+ const d=new Date().toDateString();$('#today').textContent=fmt(S.filter(s=>new Date(s.time).toDateString()===d).reduce((a,s)=>a+s.total,0));
+ rCart()}
+function rCart(){
+ $('#cart').innerHTML=cart.length?cart.map(c=>`<div class="line"><div><b>${e(c.p.name)}</b><br><small class="mut">${fmt(c.p.price)}</small></div>
+ <div class="qty"><button data-a="m" data-id="${c.p.id}">−</button><b>${c.q}</b><button data-a="p" data-id="${c.p.id}">+</button></div>
+ <div><b>${fmt(c.p.price*c.q)}</b> <button class="x" data-a="d" data-id="${c.p.id}" aria-label="لابردن">×</button></div></div>`).join(''):'<div class="empty">سەبەتە بەتاڵە.<br>بارکۆد سکان بکە یان بەرهەمێک هەڵبژێرە.</div>';
+ const t=calc();$('#sub').textContent=fmt(t.sub);$('#tot').textContent=fmt(t.total);$('#payb').disabled=!cart.length;$('#cn').textContent=cart.reduce((a,c)=>a+c.q,0);$('#ct').textContent=fmt(t.total)}
+function add(id){const p=P.find(x=>x.id==id);if(!p)return false;const c=cart.find(x=>x.p.id==id);
+ if((c?c.q:0)+1>p.stock){toast('کۆگا بەشی ناکات');return false}
+ c?c.q++:cart.push({p,q:1});rCart();return true}
+
+/* ---- بارکۆد ---- */
+function scan(code){code=String(code).trim();if(!code)return;
+ if($('#sale').classList.contains('hide'))show('sale');
+ const p=P.find(x=>String(x.code)===code);
+ if(p){if(p.stock<=0){beep(false);return toast('«'+p.name+'» لە کۆگا نەماوە')}
+  if(add(p.id)){beep();toast(p.name+' — '+fmt(p.price))}}
+ else{beep(false);quickAdd(code)}}
+$('#bc').onkeydown=ev=>{if(ev.key==='Enter'){scan(ev.target.value);ev.target.value=''}};
+let buf='',bt=0;
+document.addEventListener('keydown',ev=>{ /* سکانەری USB کاتێک هیچ خانەیەک چالاک نییە */
+ if(/^(INPUT|SELECT|TEXTAREA)$/.test(ev.target.tagName)||document.querySelector('dialog[open]'))return;
+ const n=Date.now();if(n-bt>80)buf='';bt=n;
+ if(ev.key==='Enter'){if(buf.length>=4)scan(buf);buf='';return}
+ if(ev.key.length===1)buf+=ev.key});
+document.addEventListener('click',ev=>{if(matchMedia('(pointer:fine)').matches&&!$('#sale').classList.contains('hide')&&!document.querySelector('dialog[open]')&&!ev.target.closest('input'))$('#bc').focus()});
+
+function quickAdd(code){camStop();const d=$('#qd');
+ d.innerHTML=`<h3 style="margin:0 0 4px">بەرهەمی نوێ</h3><p class="mut" style="margin:0 0 10px">ئەم بارکۆدە تۆمار نەکراوە. زانیارییەکان بنووسە.</p>
+ <div class="fs"><label>بارکۆد<input id="qc" value="${e(code)}" readonly></label><label>ناو<input id="qn"></label>
+ <label>نرخ<input id="qp" type="number" min="0"></label><label>بڕی کۆگا<input id="qs" type="number" min="0" value="1"></label>
+ <label>بەش<input id="qg" list="cl" placeholder="گشتی"></label></div>
+ <datalist id="cl">${[...new Set(P.map(p=>p.cat))].map(c=>`<option value="${e(c)}">`).join('')}</datalist>
+ <div class="row"><button id="qx">پاشگەزبوونەوە</button><button class="pri" id="qk">پاشەکەوت و زیادکردن</button></div>`;
+ d.showModal();$('#qn').focus();$('#qx').onclick=()=>d.close();
+ $('#qk').onclick=()=>{const n=$('#qn').value.trim(),pr=$('#qp').value;
+  if(!n||pr==='')return toast('ناو و نرخ پێویستن');
+  const p={id:Date.now(),name:n,code,cat:$('#qg').value.trim()||'گشتی',price:+pr,stock:Math.max(+$('#qs').value||0,1)};
+  P.push(p);sv();d.close();rSale();add(p.id);beep();toast('بەرهەم پاشەکەوت کرا')}}
+
+let stream=null,tmr,zr,camMode='sale',lastC='',lastT=0;
+function loadZ(){return window.ZXing?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function getStream(){
+ const base={facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30}};
+ let st;try{st=await navigator.mediaDevices.getUserMedia({video:{...base,advanced:[{focusMode:'continuous'}]}})}
+ catch(e){st=await navigator.mediaDevices.getUserMedia({video:base})}
+ try{const tr=st.getVideoTracks()[0],cp=tr.getCapabilities?tr.getCapabilities():{};
+  if(cp.focusMode&&cp.focusMode.includes('continuous'))await tr.applyConstraints({advanced:[{focusMode:'continuous'}]});
+  const z=$('#zm');if(z){if(cp.zoom){z.min=cp.zoom.min;z.max=cp.zoom.max;z.step=cp.zoom.step||0.1;z.value=cp.zoom.min;z.style.display='block';
+   z.oninput=()=>tr.applyConstraints({advanced:[{zoom:+z.value}]}).catch(()=>{})}else z.style.display='none'}
+ }catch(e){}
+ return st}
+async function openCam(mode){camMode=mode;$('#cd').showModal();
+ try{stream=await getStream();const v=$('#vid');v.srcObject=stream;await v.play();
+  if('BarcodeDetector' in window){const det=new BarcodeDetector();
+   const tick=async()=>{if(!stream)return;try{if(v.readyState>=2){const r=await det.detect(v);if(r[0])onCode(r[0].rawValue)}}catch(x){}tmr=setTimeout(tick,100)};tick()}
+  else{await loadZ();const h=new Map();h.set(ZXing.DecodeHintType.TRY_HARDER,true);
+   zr=new ZXing.BrowserMultiFormatReader(h,100);zr.decodeFromStream(stream,v,r=>{if(r)onCode(r.getText())})}}
+ catch(x){camStop();toast('کامێرا کار ناکات. ڕێگەپێدان بدە یان سکانەری USB بەکاربهێنە')}}
+function camStop(){clearTimeout(tmr);if(stream&&stream.getTracks)stream.getTracks().forEach(t=>t.stop());stream=null;
+ if(zr){try{zr.reset()}catch(x){}zr=null}const d=$('#cd');if(d.open)d.close()}
+function onCode(c){const n=Date.now();if(c===lastC&&n-lastT<2000){lastT=n;return}lastC=c;lastT=n;
+ if(navigator.vibrate)navigator.vibrate(60);
+ if(camMode==='fill'){camStop();$('#pc').value=c;beep();chkCode()}else scan(c)}
+$('#camb').onclick=()=>openCam('sale');$('#pcam').onclick=()=>openCam('fill');
+$('#cd').addEventListener('close',camStop);
+
+/* ---- سەبەتە ---- */
+$('#cats').onclick=ev=>{const c=ev.target.dataset.c;if(c){cat=c;rSale()}};
+$('#grid').onclick=ev=>{const b=ev.target.closest('.item');if(b)add(b.dataset.id)};
+$('#q').oninput=rSale;
+$('#q').onkeydown=ev=>{if(ev.key==='Enter'){const q=ev.target.value.trim().toLowerCase();const p=P.find(x=>x.name.toLowerCase().includes(q)&&x.stock>0);if(p){add(p.id);ev.target.value='';rSale()}else toast('بەرهەم نەدۆزرایەوە')}};
+$('#cart').onclick=ev=>{const b=ev.target.closest('[data-a]');if(!b)return;const i=cart.findIndex(c=>c.p.id==b.dataset.id),c=cart[i];
+ if(b.dataset.a==='p')add(c.p.id);else if(b.dataset.a==='m'){c.q--;if(c.q<=0)cart.splice(i,1);rCart()}else{cart.splice(i,1);rCart()}};
+$('#clr').onclick=()=>{cart=[];rCart()};
+function sheet(o){$('.cartcol').classList.toggle('open',o);$('#sbg').classList.toggle('open',o)}
+$('#cbar').onclick=()=>sheet(true);$('#sbg').onclick=()=>sheet(false);
+$('#disc').oninput=$('#tax').oninput=rCart;
+
+$('#payb').onclick=()=>{const t=calc();meth='cash';
+ $('#pd').innerHTML=`<h3 style="margin:0">پارەدان</h3><div class="big">${fmt(t.total)}</div>
+ <div class="seg"><button class="on" data-m="cash">نەقد</button><button data-m="card">کارت</button><button data-m="debt">قەرز</button></div>
+ <div id="cash"><input id="rcv" type="number" min="0" placeholder="بڕی وەرگیراو">
+ <div class="seg" style="flex-wrap:wrap"><button data-r="${t.total}">دروست</button>${[5000,10000,25000,50000].map(v=>`<button data-r="${v}">${v.toLocaleString('en-US')}</button>`).join('')}</div>
+ <div id="chg" class="big" style="font-size:20px;color:var(--ok)"></div></div>
+ <div id="cust" class="fs hide"><label>ناوی قەرزار<input id="dn" list="dl" autocomplete="off"></label><label>ژمارەی مۆبایل<input id="dph" inputmode="tel"></label><datalist id="dl">${D.map(d=>`<option value="${e(d.name)}">`).join('')}</datalist></div>
+ <div class="row"><button onclick="pd.close()">پاشگەزبوونەوە</button><button class="pri" id="ok">تەواوکردنی فرۆشتن</button></div>`;
+ $('#pd').showModal();$('#rcv').focus();
+ $('#rcv').oninput=()=>{const r=+$('#rcv').value||0;$('#chg').textContent=meth==='debt'?'قەرز: '+fmt(Math.max(t.total-r,0)):r>=t.total?'باقی: '+fmt(r-t.total):'کەمە: '+fmt(t.total-r)};
+ $('#pd').onclick=ev=>{const b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.m){meth=b.dataset.m;$('#pd').querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x===b));$('#cash').classList.toggle('hide',meth==='card');$('#cust').classList.toggle('hide',meth!=='debt');$('#rcv').oninput()}
+  if(b.dataset.r){$('#rcv').value=b.dataset.r;$('#rcv').oninput()}};
+ $('#ok').onclick=()=>{const r=meth==='card'?t.total:(+$('#rcv').value||0);const cust=$('#dn').value.trim();
+  if(meth==='cash'&&r<t.total)return toast('بڕی وەرگیراو کەمە');if(meth==='debt'){if(!cust)return toast('ناوی قەرزار بنووسە');if(r>=t.total)return toast('بڕی وەرگیراو بەقەدەر کۆیە، نەقد هەڵبژێرە')}
+  const sale={no:(S[0]?S[0].no:1000)+1,time:Date.now(),items:cart.map(c=>({n:c.p.name,q:c.q,pr:c.p.price})),...t,meth,paid:r,cust:meth==='debt'?cust:'',owe:meth==='debt'?t.total-r:0};if(sale.owe)addDebt(cust,$('#dph').value.trim(),sale.owe,'پسوڵە #'+sale.no);
+  cart.forEach(c=>{c.p.stock-=c.q});S.unshift(sale);cart=[];$('#disc').value=0;sv();$('#pd').close();sheet(false);rSale();rcpt(sale)}};
+
+function rcpt(s){$('#rc').innerHTML=`<div style="text-align:center"><b>فرۆشگاکەم</b><br>پسوڵە #${s.no}<br>${new Date(s.time).toLocaleString('en-GB')}</div><hr>
+ ${s.items.map(i=>`<div class="l"><span>${e(i.n)} × ${i.q}</span><span>${fmt(i.pr*i.q)}</span></div>`).join('')}<hr>
+ <div class="l"><span>کۆ</span><span>${fmt(s.sub)}</span></div>
+ ${s.disc?`<div class="l"><span>داشکاندن</span><span>-${fmt(s.disc)}</span></div>`:''}
+ ${s.tax?`<div class="l"><span>باج</span><span>${fmt(s.tax)}</span></div>`:''}
+ <div class="l"><b>کۆی گشتی</b><b>${fmt(s.total)}</b></div>
+ <div class="l"><span>${mlab(s.meth)}${s.cust?' — '+e(s.cust):''}</span><span>${fmt(s.paid)}</span></div>${s.owe?`<div class="l"><b>قەرز</b><b>${fmt(s.owe)}</b></div>`:''}
+ ${s.meth==='cash'?`<div class="l"><span>باقی</span><span>${fmt(s.paid-s.total)}</span></div>`:''}<hr><div style="text-align:center">سوپاس بۆ سەردانتان</div>`;
+ $('#rd').showModal()}
+
+/* ---- بەرهەمەکان ---- */
+function rProd(){$('#ptb').innerHTML=P.map(p=>`<tr><td><b>${e(p.name)}</b></td><td dir="ltr" style="text-align:end">${e(p.code)}</td><td>${e(p.cat)}</td>
+ <td><input type="number" min="0" value="${p.price}" data-f="price" data-id="${p.id}"></td>
+ <td><input type="number" min="0" value="${p.stock}" data-f="stock" data-id="${p.id}" class="${p.stock<=5?'low':''}"></td>
+ <td><button class="x" data-del="${p.id}">سڕینەوە</button></td></tr>`).join('')}
+$('#ptb').onchange=ev=>{const i=ev.target.dataset;if(!i.f)return;const p=P.find(x=>x.id==i.id);p[i.f]=Math.max(0,+ev.target.value||0);sv();toast('پاشەکەوت کرا')};
+$('#ptb').onclick=ev=>{const d=ev.target.dataset.del;if(d&&sure(ev.target)){P=P.filter(p=>p.id!=d);sv();rProd()}};
+function chkCode(){const c=$('#pc').value.trim(),p=P.find(x=>String(x.code)===c);if(c&&p){toast('ئەم بارکۆدە هەیە: '+p.name);return true}$('#pn').focus();return false}
+$('#pc').onkeydown=ev=>{if(ev.key==='Enter'){ev.preventDefault();chkCode()}};
+$('#pgen').onclick=()=>{let c;do{c='2'+String(Date.now()).slice(-9)+Math.floor(Math.random()*100)}while(P.some(p=>String(p.code)===c));$('#pc').value=c};
+$('#padd').onclick=()=>{const n=$('#pn').value.trim(),pr=$('#pp').value;let c=$('#pc').value.trim();
+ if(!n||pr==='')return toast('ناو و نرخ پێویستن');
+ if(c&&P.some(p=>String(p.code)===c))return toast('ئەم بارکۆدە پێشتر تۆمار کراوە');
+ if(!c){$('#pgen').click();c=$('#pc').value}
+ P.push({id:Date.now(),name:n,code:c,cat:$('#pg').value.trim()||'گشتی',price:+pr,stock:+$('#ps').value||0});
+ ['pn','pc','pg','pp','ps'].forEach(i=>$('#'+i).value='');sv();rProd();toast('بەرهەم زیاد کرا')};
+
+/* ---- مێژوو ---- */
+function rHistOld(){const d=new Date().toDateString(),td=S.filter(s=>new Date(s.time).toDateString()===d);
+ const sum=a=>a.reduce((x,s)=>x+s.total,0);
+ $('#stats').innerHTML=`<div>فرۆشی ئەمڕۆ<b>${fmt(sum(td))}</b></div><div>پسوڵەی ئەمڕۆ<b>${td.length}</b></div><div>نەقد<b>${fmt(sum(td.filter(s=>s.meth==='cash')))}</b></div><div>کارت<b>${fmt(sum(td.filter(s=>s.meth==='card')))}</b></div>`;
+ $('#htb').innerHTML=S.map(s=>`<tr><td>#${s.no}</td><td>${new Date(s.time).toLocaleString('en-GB')}</td><td>${s.meth==='cash'?'نەقد':'کارت'}</td><td><b>${fmt(s.total)}</b></td><td><button data-no="${s.no}">پسوڵە</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">هێشتا هیچ فرۆشتنێک نییە</td></tr>'}
+$('#htb').onclick=ev=>{const n=ev.target.dataset.no;if(n)rcpt(S.find(s=>s.no==n))};
+
+/* ---- یاریدەدەر ---- */
+const mlab=m=>m==='cash'?'نەقد':m==='card'?'کارت':'قەرز';
+function sure(b){if(b.dataset.s)return true;b.dataset.s=1;const o=b.textContent;b.textContent='دڵنیایت؟';setTimeout(()=>{b.dataset.s='';b.textContent=o},3000);return false}
+
+/* ---- مەندوب ---- */
+function rSupp(){$('#mlist').innerHTML=M.map(m=>`<div class="card"><div><b>${e(m.name)}</b><br><span class="tag">${e(m.type||'بێ جۆر')}</span></div><div class="acts">${m.phone?`<a class="btn" href="tel:${e(m.phone)}" dir="ltr">${e(m.phone)}</a>`:''}<button class="x" data-del="${m.id}">سڕینەوە</button></div></div>`).join('')||'<div class="empty">هێشتا هیچ مەندوبێک نییە</div>'}
+$('#madd').onclick=()=>{const n=$('#mn').value.trim();if(!n)return toast('ناوی مەندوب پێویستە');M.unshift({id:Date.now(),name:n,phone:$('#mp').value.trim(),type:$('#mt').value.trim()});['mn','mp','mt'].forEach(i=>$('#'+i).value='');sv();rSupp();toast('مەندوب زیاد کرا')};
+$('#mlist').onclick=ev=>{const d=ev.target.dataset.del;if(d&&sure(ev.target)){M=M.filter(m=>m.id!=d);sv();rSupp()}};
+
+/* ---- قەرز ---- */
+const bal=d=>d.log.reduce((a,l)=>a+l.a,0);
+function addDebt(name,phone,amt,note){let d=D.find(x=>x.name===name);if(!d){d={id:Date.now(),name,phone:phone||'',log:[]};D.push(d)}if(phone&&!d.phone)d.phone=phone;d.log.unshift({t:Date.now(),a:amt,n:note||''});sv()}
+function rDebt(){const L=[...D].sort((x,y)=>bal(y)-bal(x));
+ $('#dtot').textContent=fmt(D.reduce((a,d)=>a+Math.max(bal(d),0),0));$('#dcnt').textContent=D.filter(d=>bal(d)>0).length;
+ $('#dlist').innerHTML=L.map(d=>{const b=bal(d);return`<button class="card" data-id="${d.id}"><span><b>${e(d.name)}</b><br><small class="mut" dir="ltr">${e(d.phone||'')}</small></span><b class="${b>0?'low':''}" style="${b>0?'':'color:var(--ok)'}">${b>0?fmt(b):'پارەدراوە'}</b></button>`}).join('')||'<div class="empty">هیچ قەرزارێک نییە</div>'}
+$('#dlist').onclick=ev=>{const b=ev.target.closest('[data-id]');if(b)openDebt(b.dataset.id)};
+$('#dadd').onclick=()=>{const n=$('#dn2').value.trim(),a=+$('#da2').value;if(!n||!(a>0))return toast('ناو و بڕی قەرز پێویستن');addDebt(n,$('#dp2').value.trim(),a,$('#dno2').value.trim());['dn2','dp2','da2','dno2'].forEach(i=>$('#'+i).value='');rDebt();toast('قەرز تۆمار کرا')};
+function openDebt(id){const dg=$('#dd'),d=D.find(x=>x.id==id);if(!d)return;const b=bal(d);
+ dg.innerHTML=`<h3 style="margin:0">${e(d.name)}</h3>${d.phone?`<a href="tel:${e(d.phone)}" dir="ltr">${e(d.phone)}</a>`:''}
+ <div class="big ${b>0?'low':''}">${fmt(b)}</div>
+ <input id="dam" type="number" min="0" placeholder="بڕ">
+ <div class="row"><button class="pri" id="dpay">وەرگرتنی پارە</button><button id="dmore">قەرزی زیاد</button></div>
+ <div style="max-height:26vh;overflow:auto;margin-top:10px">${d.log.map(l=>`<div class="tl"><span>${new Date(l.t).toLocaleDateString('en-GB')} ${e(l.n)}</span><b class="${l.a>0?'low':''}">${l.a>0?'+':'-'}${fmt(Math.abs(l.a))}</b></div>`).join('')}</div>
+ <div class="row"><button class="x" id="ddel">سڕینەوەی قەرزار</button><button id="dcl">داخستن</button></div>`;
+ if(!dg.open)dg.showModal();
+ const go=s=>{let a=+$('#dam').value;if(s<0)a=Math.min(a,Math.max(bal(d),0));if(!(a>0))return toast('بڕێکی دروست بنووسە');d.log.unshift({t:Date.now(),a:s*a,n:s<0?'پارەدان':'قەرزی زیاد'});sv();rDebt();openDebt(id)};
+ $('#dpay').onclick=()=>go(-1);$('#dmore').onclick=()=>go(1);
+ $('#ddel').onclick=ev=>{if(sure(ev.target)){D=D.filter(x=>x.id!=id);sv();dg.close();rDebt()}};$('#dcl').onclick=()=>dg.close()}
+
+/* ---- ڕاپۆرت ---- */
+let per='day';
+const WD=['یەک','دوو','سێ','چوار','پێنج','هەینی','شەم'],PN={day:'ڕۆژانە',week:'هەفتانە',month:'مانگانە',year:'ساڵانە'};
+function range(){const n=new Date(),y=n.getFullYear(),m=n.getMonth(),d=n.getDate();
+ if(per==='day')return[new Date(y,m,d),new Date(y,m,d+1)];
+ if(per==='week')return[new Date(y,m,d-6),new Date(y,m,d+1)];
+ if(per==='month')return[new Date(y,m,1),new Date(y,m+1,1)];
+ return[new Date(y,0,1),new Date(y+1,0,1)]}
+function rHist(){
+ $('#per').innerHTML=Object.keys(PN).map(k=>`<button class="${k===per?'on':''}" data-p="${k}">${PN[k]}</button>`).join('');
+ const[a,b]=range(),L=S.filter(s=>s.time>=a&&s.time<b),sum=f=>L.filter(f).reduce((x,s)=>x+s.total,0),tot=sum(()=>1);
+ $('#stats').innerHTML=`<div>کۆی فرۆشتن<b>${fmt(tot)}</b></div><div>ژمارەی پسوڵە<b>${L.length}</b></div><div>نەقد<b>${fmt(sum(s=>s.meth==='cash'))}</b></div><div>کارت<b>${fmt(sum(s=>s.meth==='card'))}</b></div><div>قەرز<b>${fmt(L.reduce((x,s)=>x+(s.owe||0),0))}</b></div><div>تێکڕای پسوڵە<b>${fmt(L.length?tot/L.length:0)}</b></div>`;
+ let n,lab,idx;
+ if(per==='day'){n=24;lab=i=>i;idx=s=>new Date(s.time).getHours()}
+ else if(per==='week'){n=7;lab=i=>WD[new Date(a.getFullYear(),a.getMonth(),a.getDate()+i).getDay()];idx=s=>Math.round((new Date(s.time).setHours(0,0,0,0)-a.getTime())/864e5)}
+ else if(per==='month'){n=new Date(a.getFullYear(),a.getMonth()+1,0).getDate();lab=i=>i+1;idx=s=>new Date(s.time).getDate()-1}
+ else{n=12;lab=i=>i+1;idx=s=>new Date(s.time).getMonth()}
+ const v=Array(n).fill(0);L.forEach(s=>{const i=idx(s);if(i>=0&&i<n)v[i]+=s.total});
+ const mx=Math.max(...v,1),top={};L.forEach(s=>s.items.forEach(i=>{top[i.n]=(top[i.n]||0)+i.q}));
+ const tp=Object.entries(top).sort((x,y)=>y[1]-x[1]).slice(0,5);
+ $('#chart').innerHTML=`<div class="bars">${v.map((x,i)=>`<div class="bc" title="${fmt(x)}"><i style="height:${x?Math.max(3,Math.round(x/mx*120)):1}px"></i><span>${lab(i)}</span></div>`).join('')}</div><h3 style="margin:14px 0 6px;font-size:15px">زۆرترین فرۆشراو</h3>${tp.map(([nm,q])=>`<div class="tl"><span>${e(nm)}</span><b>${q}</b></div>`).join('')||'<div class="mut">هیچ داتایەک نییە</div>'}`;
+ $('#htb').innerHTML=L.slice(0,150).map(s=>`<tr><td>#${s.no}</td><td>${new Date(s.time).toLocaleString('en-GB')}</td><td>${mlab(s.meth)}</td><td><b>${fmt(s.total)}</b></td><td><button data-no="${s.no}">پسوڵە</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">هیچ فرۆشتنێک نییە</td></tr>'}
+$('#per').onclick=ev=>{const p=ev.target.dataset.p;if(p){per=p;rHist()}};
+rSale();
+</script>
+</body>
+</html>
